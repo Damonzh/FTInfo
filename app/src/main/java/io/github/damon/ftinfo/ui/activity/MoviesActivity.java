@@ -5,7 +5,6 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +29,7 @@ import io.github.damonzh.ftinfo.bean.Movies;
  * Date:        15/12/25
  * Description:
  */
-public class MoviesActivity extends AppCompatActivity implements IMovieView, SwipeRefreshLayout.OnRefreshListener, MovieAdapter.OnItemClickListener {
+public class MoviesActivity extends AppCompatActivity implements IMovieView, MovieAdapter.OnItemClickListener {
 
     private static final String TAG = MoviesActivity.class.getSimpleName();
 
@@ -38,8 +37,7 @@ public class MoviesActivity extends AppCompatActivity implements IMovieView, Swi
 
     @Bind(R.id.rv_movie_list)
     RecyclerView mMovieList;
-    @Bind(R.id.srl_movie)
-    SwipeRefreshLayout mSrlMovie;
+
     @Bind(R.id.tool_bar)
     Toolbar mToolBar;
 
@@ -57,7 +55,6 @@ public class MoviesActivity extends AppCompatActivity implements IMovieView, Swi
         mMovieList.addItemDecoration(new RecyclerInsetsDecoration(this));
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mMoviePresenter = new MoviePresenterImpl(this);
-        mSrlMovie.setOnRefreshListener(this);
         mMovieList.addOnScrollListener(mScrollListener);
         mMoviePresenter.start();
     }
@@ -81,20 +78,14 @@ public class MoviesActivity extends AppCompatActivity implements IMovieView, Swi
     }
 
     @Override
-    public void onRefresh() {
-        mMoviePresenter.getPopularMovies();
-    }
-
-    @Override
     public void finishRefresh() {
-        if (null != mSrlMovie) {
-            mSrlMovie.setRefreshing(false);
-        }
+      //TODO 下拉刷新时使用 暂时去掉下拉刷新
     }
 
     @Override
     public void finishLoadMore() {
-
+        //移除ProgressBar
+        mMovieAdapter.removeMovie(mMovieAdapter.getAllMovies().size() - 1);
     }
 
     @Override
@@ -120,6 +111,8 @@ public class MoviesActivity extends AppCompatActivity implements IMovieView, Swi
                     .findFirstVisibleItemPosition();
 
             if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !mMoviePresenter.isLoading()) {
+                //添加一个null元素，判断是该Item就是ProgressBar
+                mMovieAdapter.addMovie(null);
                 mMoviePresenter.onEndListReached();
             }
 

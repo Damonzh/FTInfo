@@ -52,19 +52,14 @@ public class MoviePresenterImpl implements IPresenter {
     public void onEventMainThread(MoviesWrapper moviesWrapper) {
 
         if (mMovieView.isListEmpty()){
-            //下拉刷新
-            mMovieView.finishRefresh();
-            isLoading = false;
+            //首次加载数据
             mMovieView.showMovies(moviesWrapper.getResults());
         }else{
             //上拉加载
             mMovieView.finishLoadMore();
-            isLoading = false;
             mMovieView.showMoreMovies(moviesWrapper.getResults());
         }
-
-
-
+        isLoading = false;
     }
 
     public void onEventMainThread(String imageBaseUrl) {
@@ -72,8 +67,17 @@ public class MoviePresenterImpl implements IPresenter {
         getPopularMovies();
     }
 
+    /**
+     * 加载数据失败
+     * @param error
+     */
     public void onEventMainThread(RetrofitError error){
-        mMovieView.finishRefresh();
+        if (mMovieView.isListEmpty()) {
+            mMovieView.finishRefresh();
+        }else {
+            mMovieView.finishLoadMore();
+        }
+        isLoading = false;
         mMovieView.showErrorToast("网络出错啦");
     }
 
