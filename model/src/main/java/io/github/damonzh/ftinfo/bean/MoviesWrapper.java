@@ -9,6 +9,15 @@ import java.util.List;
  * Description:
  */
 public class MoviesWrapper implements Serializable{
+
+    public enum MOVIE_TYPE {
+        POPULAR,//最近流行
+        TOP_RATED,//高分电影
+        UP_COMING,//即将上映
+        NOW_PLAYING//正在上映
+    }
+    private MOVIE_TYPE movieType;
+
     private String page;
 
     private String total_pages;
@@ -16,6 +25,14 @@ public class MoviesWrapper implements Serializable{
     private String total_results;
 
     private List<Movies> results;
+
+    public MOVIE_TYPE getMovieType() {
+        return movieType;
+    }
+
+    public void setMovieType(MOVIE_TYPE movieType) {
+        this.movieType = movieType;
+    }
 
     public String getPage() {
         return page;

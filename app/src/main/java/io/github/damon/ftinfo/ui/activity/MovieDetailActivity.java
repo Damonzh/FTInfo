@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.damon.ftinfo.R;
+import io.github.damon.ftinfo.ui.fragment.PopularMoviesFragment;
 import io.github.damonzh.ftinfo.API;
 import io.github.damonzh.ftinfo.bean.Movies;
 
@@ -38,7 +39,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
-        Movies movies = (Movies) getIntent().getSerializableExtra(MoviesActivity.EXTRA_MOVIE);
+        Movies movies = (Movies) getIntent().getSerializableExtra(PopularMoviesFragment.EXTRA_MOVIE);
         mMoviePoster.setTransitionName(movies.getTitle());
         mMovieOverView.setText(movies.getOverview());
         Picasso.with(this).load(API.IMAGE_BASE_URL + movies.getBackdrop_path()).into(mMoviePoster);

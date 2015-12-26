@@ -22,7 +22,6 @@ public class ConfigurationModelImpl implements IConfigurationModel {
 
     @Override
     public void getConfiguration() {
-
         RestAdapter retrofit = new RestAdapter.Builder().setEndpoint(API.HOST_URL).build();
         ConfigurationService configurationService = retrofit.create(ConfigurationService.class);
         configurationService.getConfiguration(API.API_KEY, retrofitCallBack);

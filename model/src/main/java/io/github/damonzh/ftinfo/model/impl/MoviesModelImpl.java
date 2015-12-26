@@ -2,6 +2,7 @@ package io.github.damonzh.ftinfo.model.impl;
 
 import de.greenrobot.event.EventBus;
 import io.github.damonzh.ftinfo.API;
+import io.github.damonzh.ftinfo.bean.Movies;
 import io.github.damonzh.ftinfo.bean.MoviesWrapper;
 import io.github.damonzh.ftinfo.model.IMoviesModel;
 import io.github.damonzh.ftinfo.rest.MoviesService;
@@ -16,28 +17,45 @@ import retrofit.client.Response;
  * Description:
  */
 public class MoviesModelImpl implements IMoviesModel {
-    private int mCurrentPage = 1;
+    private int mPopularPage = 1;
+    private int mTopRatedPage = 1;
 
     @Override
     public void getPopularMovies() {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API.HOST_URL).build();
-        MoviesService moviesService = restAdapter.create(MoviesService.class);
-        moviesService.getPopularMovies(API.API_KEY,mCurrentPage,"en",callback);
+        final MoviesService moviesService = restAdapter.create(MoviesService.class);
+        moviesService.getPopularMovies(API.API_KEY, mPopularPage, "en", new Callback<MoviesWrapper>() {
+            @Override
+            public void success(MoviesWrapper moviesWrapper, Response response) {
+                moviesWrapper.setMovieType(MoviesWrapper.MOVIE_TYPE.POPULAR);
+                EventBus.getDefault().post(moviesWrapper);
+                mPopularPage++;
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                EventBus.getDefault().post(error);
+            }
+        });
     }
 
-    public Callback callback = new Callback() {
-        @Override
-        public void success(Object o, Response response) {
-            if (o instanceof MoviesWrapper){
-                MoviesWrapper moviesWrapper = (MoviesWrapper) o;
+    @Override
+    public void getTopRatedMovies() {
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API.HOST_URL).build();
+        MoviesService moviesService = restAdapter.create(MoviesService.class);
+        moviesService.getTopRatedMovies(API.API_KEY, mTopRatedPage, new Callback<MoviesWrapper>() {
+            @Override
+            public void success(MoviesWrapper moviesWrapper, Response response) {
+                moviesWrapper.setMovieType(MoviesWrapper.MOVIE_TYPE.TOP_RATED);
                 EventBus.getDefault().post(moviesWrapper);
-                mCurrentPage++;
+                mTopRatedPage++;
             }
-        }
 
-        @Override
-        public void failure(RetrofitError error) {
-            EventBus.getDefault().post(error);
-        }
-    };
+            @Override
+            public void failure(RetrofitError error) {
+                EventBus.getDefault().post(error);
+            }
+        });
+    }
+
 }

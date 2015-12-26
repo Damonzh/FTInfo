@@ -17,4 +17,9 @@ public interface MoviesService {
                           @Query("page") int page,//页码  1--1000
                           @Query("language") String language,
                           Callback<MoviesWrapper> callBack);
+
+    @GET("/movie/top_rated")
+    void getTopRatedMovies(@Query("api_key") String apiKey,
+                           @Query("page") int page,//页码  1--1000
+                           Callback<MoviesWrapper> callBack);
 }

@@ -11,4 +11,9 @@ public interface IMoviesModel {
      * 获取流行影片 每天更新
      */
     void getPopularMovies();
+
+    /**
+     * 获取高评分的影片 每天更新
+     */
+    void getTopRatedMovies();
 }

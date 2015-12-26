@@ -19,22 +19,27 @@ import retrofit.RetrofitError;
 public class MoviePresenterImpl implements IPresenter {
     private IMovieView mMovieView;
     private IMoviesModel mMovieModel;
-    private IConfigurationModel mConfigurationModel;
+
     private EventBus mEventBus;
     private boolean isLoading = true;
+    private MoviesWrapper.MOVIE_TYPE mMovieType;
+
+    private boolean hasStarted = false;
 
     public MoviePresenterImpl(IMovieView mMovieView) {
         this.mMovieView = mMovieView;
         this.mMovieModel = new MoviesModelImpl();
-        this.mConfigurationModel = new ConfigurationModelImpl();
+
     }
 
-    public void start() {
+    public void start(MoviesWrapper.MOVIE_TYPE movieType) {
         mEventBus = EventBus.getDefault();
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        mConfigurationModel.getConfiguration();
+        mMovieType = movieType;
+        hasStarted = true;
+        getMovies(movieType);
     }
 
     @Override
@@ -44,53 +49,61 @@ public class MoviePresenterImpl implements IPresenter {
         }
     }
 
+    public boolean hasStarted() {
+        return hasStarted;
+    }
+
     /**
      * 成功获取到数据
      *
      * @param moviesWrapper
      */
     public void onEventMainThread(MoviesWrapper moviesWrapper) {
-
-        if (mMovieView.isListEmpty()){
-            //首次加载数据
-            mMovieView.showMovies(moviesWrapper.getResults());
-        }else{
-            //上拉加载
-            mMovieView.finishLoadMore();
-            mMovieView.showMoreMovies(moviesWrapper.getResults());
+        if (mMovieType == moviesWrapper.getMovieType()) {
+            if (mMovieView.isListEmpty()) {
+                mMovieView.showMovies(moviesWrapper.getResults());
+                //首次加载数据
+            } else {
+                //上拉加载
+                mMovieView.finishLoadMore();
+                mMovieView.showMoreMovies(moviesWrapper.getResults());
+            }
+            isLoading = false;
         }
-        isLoading = false;
-    }
-
-    public void onEventMainThread(String imageBaseUrl) {
-        API.IMAGE_BASE_URL = imageBaseUrl;
-        getPopularMovies();
     }
 
     /**
      * 加载数据失败
+     *
      * @param error
      */
-    public void onEventMainThread(RetrofitError error){
+    public void onEventMainThread(RetrofitError error) {
         if (mMovieView.isListEmpty()) {
             mMovieView.finishRefresh();
-        }else {
+        } else {
             mMovieView.finishLoadMore();
         }
         isLoading = false;
         mMovieView.showErrorToast("网络出错啦");
     }
 
-    public void getPopularMovies() {
-        mMovieModel.getPopularMovies();
+    public void getMovies(MoviesWrapper.MOVIE_TYPE movieType) {
+        switch (movieType) {
+            case POPULAR:
+                mMovieModel.getPopularMovies();
+                break;
+            case TOP_RATED:
+                mMovieModel.getTopRatedMovies();
+                break;
+        }
     }
 
-    public void onEndListReached() {
-        getPopularMovies();
+    public void onEndListReached(MoviesWrapper.MOVIE_TYPE movieType) {
+        getMovies(movieType);
         isLoading = true;
     }
 
-    public boolean isLoading(){
+    public boolean isLoading() {
         return isLoading;
     }
 }
