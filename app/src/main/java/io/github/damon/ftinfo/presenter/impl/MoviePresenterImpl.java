@@ -3,11 +3,8 @@ package io.github.damon.ftinfo.presenter.impl;
 import de.greenrobot.event.EventBus;
 import io.github.damon.ftinfo.presenter.IPresenter;
 import io.github.damon.ftinfo.view.IMovieView;
-import io.github.damonzh.ftinfo.API;
 import io.github.damonzh.ftinfo.bean.MoviesWrapper;
-import io.github.damonzh.ftinfo.model.IConfigurationModel;
 import io.github.damonzh.ftinfo.model.IMoviesModel;
-import io.github.damonzh.ftinfo.model.impl.ConfigurationModelImpl;
 import io.github.damonzh.ftinfo.model.impl.MoviesModelImpl;
 import retrofit.RetrofitError;
 
@@ -59,6 +56,7 @@ public class MoviePresenterImpl implements IPresenter {
      * @param moviesWrapper
      */
     public void onEventMainThread(MoviesWrapper moviesWrapper) {
+        mMovieView.hideProgressBar();
         if (mMovieType == moviesWrapper.getMovieType()) {
             if (mMovieView.isListEmpty()) {
                 mMovieView.showMovies(moviesWrapper.getResults());
@@ -89,11 +87,20 @@ public class MoviePresenterImpl implements IPresenter {
 
     public void getMovies(MoviesWrapper.MOVIE_TYPE movieType) {
         switch (movieType) {
+            case NOW_PLAYING:
+                mMovieModel.getNowPlayingMovies();
+                break;
             case POPULAR:
                 mMovieModel.getPopularMovies();
                 break;
             case TOP_RATED:
                 mMovieModel.getTopRatedMovies();
+                break;
+            case UP_COMING:
+                mMovieModel.getUpcomingMovies();
+                break;
+            case LATEST:
+                mMovieModel.getLatestMovies();
                 break;
         }
     }

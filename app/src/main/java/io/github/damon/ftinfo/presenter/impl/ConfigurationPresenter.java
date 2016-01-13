@@ -41,7 +41,7 @@ public class ConfigurationPresenter implements IPresenter {
      */
     public void onEventMainThread(String imageBaseUrl) {
         API.IMAGE_BASE_URL = imageBaseUrl;
-        mHomeView.attatchFragment();
+        mHomeView.attachFragment();
     }
 
 

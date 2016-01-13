@@ -1,11 +1,13 @@
 package io.github.damon.ftinfo.ui.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import io.github.damon.ftinfo.ui.fragment.PopularMoviesFragment;
-import io.github.damon.ftinfo.ui.fragment.TopRatedMoviesFragment;
+import io.github.damon.ftinfo.R;
+import io.github.damon.ftinfo.ui.fragment.MoviesFragment;
+import io.github.damonzh.ftinfo.bean.MoviesWrapper;
 
 /**
  * Author:      ZhangYan
@@ -14,12 +16,15 @@ import io.github.damon.ftinfo.ui.fragment.TopRatedMoviesFragment;
  */
 public class MoviePagerAdapter extends FragmentStatePagerAdapter{
 
-    private String[] tabTitle = {"Popular","TopRated"};
+    private Context mContext;
+    private String[] tabTitle;
 
     private Fragment mFragment;
 
-    public MoviePagerAdapter(FragmentManager fm) {
+    public MoviePagerAdapter(Context context,FragmentManager fm) {
         super(fm);
+        mContext = context;
+        tabTitle = context.getResources().getStringArray(R.array.movies_type);
     }
 
     @Override
@@ -31,10 +36,19 @@ public class MoviePagerAdapter extends FragmentStatePagerAdapter{
     public Fragment getItem(int position) {
         switch (position){
             case 0 :
-                mFragment = new PopularMoviesFragment();
+                mFragment = new MoviesFragment(MoviesWrapper.MOVIE_TYPE.NOW_PLAYING);
                 break;
             case 1:
-                mFragment = new TopRatedMoviesFragment();
+                mFragment = new MoviesFragment(MoviesWrapper.MOVIE_TYPE.POPULAR);
+                break;
+            case 2:
+                mFragment = new MoviesFragment(MoviesWrapper.MOVIE_TYPE.TOP_RATED);
+                break;
+            case 3:
+                mFragment = new MoviesFragment(MoviesWrapper.MOVIE_TYPE.UP_COMING);
+                break;
+            case 4:
+                mFragment = new MoviesFragment(MoviesWrapper.MOVIE_TYPE.LATEST);
                 break;
         }
         return mFragment;

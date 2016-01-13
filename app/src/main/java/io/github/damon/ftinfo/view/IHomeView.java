@@ -6,5 +6,7 @@ package io.github.damon.ftinfo.view;
  * Description:
  */
 public interface IHomeView {
-    void attatchFragment();
+    void attachFragment();
+
+    void hideProgressBar();
 }

@@ -8,14 +8,26 @@ import java.util.List;
  * Date:        15/12/24
  * Description:
  */
-public class MoviesWrapper implements Serializable{
+public class MoviesWrapper implements Serializable {
 
     public enum MOVIE_TYPE {
-        POPULAR,//最近流行
-        TOP_RATED,//高分电影
-        UP_COMING,//即将上映
-        NOW_PLAYING//正在上映
+        POPULAR(0),//最近流行
+        TOP_RATED(1),//高分电影
+        UP_COMING(2),//即将上映
+        NOW_PLAYING(3),//正在上映
+        LATEST(4);//最新影片
+
+        private int mType = 0;
+
+        MOVIE_TYPE(int type) {
+            mType = type;
+        }
+
+        public int getType(){
+           return mType;
+        }
     }
+
     private MOVIE_TYPE movieType;
 
     private String page;

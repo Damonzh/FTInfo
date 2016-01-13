@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="insets">1dp</dimen>
+    <dimen name="text_size_normal">14sp</dimen>
+    <dimen name="text_size_larger">16sp</dimen>
+    <dimen name="text_size_extra_larger">20sp</dimen>
 </resources>

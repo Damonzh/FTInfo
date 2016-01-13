@@ -44,4 +44,6 @@ public interface IMovieView {
      * @return
      */
     boolean isListEmpty();
+
+    void hideProgressBar();
 }
